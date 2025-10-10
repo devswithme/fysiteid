@@ -1,0 +1,634 @@
+basePath: /api/v1
+definitions:
+  dto.APIResponse-any:
+    properties:
+      data: {}
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-array_dto_RegistrantGetByUserID:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.RegistrantGetByUserID'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-array_dto_TicketGet:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.TicketGet'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-array_dto_TicketPublicGet:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.TicketPublicGet'
+        type: array
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-dto_PaginatedRegistrants:
+    properties:
+      data:
+        $ref: '#/definitions/dto.PaginatedRegistrants'
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-dto_TicketGet:
+    properties:
+      data:
+        $ref: '#/definitions/dto.TicketGet'
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.APIResponse-dto_UserGet:
+    properties:
+      data:
+        $ref: '#/definitions/dto.UserGet'
+      meta:
+        $ref: '#/definitions/dto.ApiMeta'
+    type: object
+  dto.ApiMeta:
+    properties:
+      message:
+        type: string
+      request_id:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.PaginatedRegistrants:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.RegistrantGetByTicketID'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.RegistrantGetByTicketID:
+    properties:
+      created_at:
+        type: string
+      is_verified:
+        type: boolean
+      picture:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.RegistrantGetByUserID:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      is_verified:
+        type: boolean
+      ticket_id:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  dto.TicketGet:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      mode:
+        type: boolean
+      quota:
+        type: integer
+      registered_count:
+        type: integer
+      title:
+        type: string
+    type: object
+  dto.TicketPublicGet:
+    properties:
+      id:
+        type: string
+      image:
+        type: string
+      title:
+        type: string
+    type: object
+  dto.UserGet:
+    properties:
+      name:
+        type: string
+      picture:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  title: FyAPI
+  version: "1.0"
+paths:
+  /auth/logout:
+    post:
+      description: Remove token from cookies
+      responses:
+        "200":
+          description: Successfully logout
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Logout
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      description: Route to generate new access token
+      responses:
+        "201":
+          description: Successfully regenerate token
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "401":
+          description: Failed to regenerate token
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Refresh token
+      tags:
+      - auth
+  /login/google:
+    get:
+      description: Oauth2 Google login entry
+      parameters:
+      - default: /dash
+        description: Redirect URL after login
+        in: query
+        name: redirect
+        type: string
+      responses:
+        "303":
+          description: Redirected to Google login page
+          schema:
+            type: ""
+        "500":
+          description: Failed to login
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Google OAuth2 Login
+      tags:
+      - login
+  /login/google/callback:
+    get:
+      description: Route to handle Google callback
+      responses:
+        "303":
+          description: Redirected to frontend with desired redirect URL path
+          schema:
+            type: ""
+        "500":
+          description: Failed to login
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Google OAuth2 Callback
+      tags:
+      - login
+  /public/ticket/{username}:
+    get:
+      description: Get public tickets by username
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get public tickets by username
+          schema:
+            $ref: '#/definitions/dto.APIResponse-array_dto_TicketPublicGet'
+        "500":
+          description: Failed to get public tickets by username
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get public by username
+      tags:
+      - ticket
+  /public/ticket/id/{id}:
+    get:
+      description: Get public ticket by ID
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get public ticket by id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_TicketGet'
+        "500":
+          description: Failed to get public ticket by id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get public by ID
+      tags:
+      - ticket
+  /public/user/{username}:
+    get:
+      description: Get public user by username
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get public user by username
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_UserGet'
+        "500":
+          description: Failed to get public user by username
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get public by username
+      tags:
+      - user
+  /public/user/id/{ticketID}:
+    get:
+      description: Get public user by ticket ID
+      parameters:
+      - description: ticket ID
+        in: path
+        name: ticketID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get public user by ticket id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_UserGet'
+        "500":
+          description: Failed to get public user by ticket id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get public by ticket ID
+      tags:
+      - user
+  /registrant:
+    get:
+      description: Get registrants by userID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Failed to get registrants by user id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-array_dto_RegistrantGetByUserID'
+        "500":
+          description: Failed to get registrants by user id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get by userID
+      tags:
+      - registrant
+  /registrant/{ticketID}:
+    get:
+      description: Get registrants by ticketID
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticketID
+        required: true
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      - description: all
+        in: query
+        name: all
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get registrants by ticket id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_PaginatedRegistrants'
+        "500":
+          description: Failed to get registrants by ticket id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get by ticketID
+      tags:
+      - registrant
+    post:
+      description: Create new registrant
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticketID
+        required: true
+        type: string
+      - description: state
+        in: query
+        name: state
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully create registrant
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "500":
+          description: Failed to create registrant
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Create
+      tags:
+      - registrant
+  /registrant/gen/{ticketID}:
+    get:
+      description: Generate unique id for private mode
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticketID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully generating unique id
+          schema:
+            type: ""
+        "500":
+          description: Failed generating unique id
+          schema:
+            type: ""
+      summary: Generate
+      tags:
+      - registrant
+  /registrant/verify/{id}/{ticketID}:
+    get:
+      description: Verify registrant by current user id and ticket id
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticketID
+        required: true
+        type: string
+      - description: Registrant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "303":
+          description: Redirected to /verify?err=0?ticket=
+          schema:
+            type: ""
+      summary: Verify
+      tags:
+      - registrant
+  /ticket:
+    get:
+      description: Get tickets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get tickets
+          schema:
+            $ref: '#/definitions/dto.APIResponse-array_dto_TicketGet'
+        "500":
+          description: Failed to get tickets
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get
+      tags:
+      - ticket
+    post:
+      description: Create new ticket
+      parameters:
+      - description: title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: mode
+        in: formData
+        name: mode
+        required: true
+        type: boolean
+      - description: quota
+        in: formData
+        name: quota
+        required: true
+        type: integer
+      - description: image
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully create ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "500":
+          description: Failed to create ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Create
+      tags:
+      - ticket
+  /ticket/{id}:
+    delete:
+      description: Delete ticket by ID
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully delete ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "500":
+          description: Failed to delete ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Delete
+      tags:
+      - ticket
+    get:
+      description: Get ticket by ID
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get ticket by id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_TicketGet'
+        "500":
+          description: Failed to get ticket by id
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get by ID
+      tags:
+      - ticket
+    patch:
+      description: Update ticket by ID
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: mode
+        in: formData
+        name: mode
+        required: true
+        type: boolean
+      - description: quota
+        in: formData
+        name: quota
+        required: true
+        type: integer
+      - description: image
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully update ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "500":
+          description: Failed to update ticket
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Update
+      tags:
+      - ticket
+  /user/me:
+    get:
+      description: Get current logged-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully get current user
+          schema:
+            $ref: '#/definitions/dto.APIResponse-dto_UserGet'
+        "500":
+          description: Failed to get current user
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Get profile
+      tags:
+      - user
+    patch:
+      description: Update current logged-in user
+      parameters:
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: avatar
+        in: formData
+        name: avatar
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully update current user
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "400":
+          description: Username already exists
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+        "500":
+          description: Failed to update current user
+          schema:
+            $ref: '#/definitions/dto.APIResponse-any'
+      summary: Update user
+      tags:
+      - user
+swagger: "2.0"
