@@ -5,6 +5,7 @@ import (
 	"fybe/helper"
 	"fybe/model/dto"
 	"fybe/service"
+	"log"
 	"net/url"
 	"os"
 	"strings"
@@ -53,6 +54,8 @@ func (t *authController) Login(c *fiber.Ctx) error {
 	if err != nil || u.Host != "" || u.IsAbs() || !strings.HasPrefix(u.Path, "/") {
 		redirect = "/dash"
 	}
+
+	log.Println(u)
 
 	state, err := t.service.SaveState(redirect)
 

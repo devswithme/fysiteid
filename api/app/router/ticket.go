@@ -26,7 +26,7 @@ func TicketRouter(c controller.TicketController, app fiber.Router, validator *va
 	ticket.Get("/", c.Get)
 	ticket.Get("/:id", c.GetByID)
 	ticket.Delete("/:id", c.Delete)
-	ticket.Use(middleware.ValidatorMiddleware[dto.TicketCreate](validator)).Use(middleware.LimiterMiddleware(limiter, redis_rate.PerHour(5))).Post("/", c.Create)
+	ticket.Use(middleware.ValidatorMiddleware[dto.TicketCreate](validator)).Use(middleware.LimiterMiddleware(limiter, redis_rate.PerSecond(5))).Post("/", c.Create)
 	ticket.Use(middleware.ValidatorMiddleware[dto.TicketCreate](validator)).Patch("/:id", c.Update)
 
 	ticket_public := app.Group("/public/ticket")

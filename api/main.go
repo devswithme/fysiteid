@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gofiber/contrib/swagger"
+	"go.uber.org/zap"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -46,5 +47,7 @@ func main() {
 	}))
 
 	app.InitRouter(fApp, router, redis)
-	fApp.Listen(":" + os.Getenv("BE_PORT"))
+	if err := fApp.Listen(":" + os.Getenv("BE_PORT")); err != nil {
+		logger.Error("failed to start server: ", zap.Error(err))
+	}
 }

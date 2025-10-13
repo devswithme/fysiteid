@@ -5,7 +5,7 @@ export class AuthService {
   async login(path?: string): Promise<void> {
     window.location.href = `${
       import.meta.env.VITE_API_URL
-    }/login/google?redirect=${path}`;
+    }/login/google?redirect=${encodeURIComponent(path as string)}`;
   }
 
   async logout(): Promise<void> {

@@ -52,15 +52,13 @@ export const Route = createFileRoute("/_auth/dash/ticket/$id/")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       page: Number(search.page) || 1,
-      limit: Number(search.limit) || 10,
     };
   },
   loader: async ({ params: { id } }) => {
     try {
       const data = await ticketService.getTicketById(id);
-      if (!data) {
-        throw notFound();
-      }
+      if (!data) throw notFound();
+
       return data;
     } catch {
       throw notFound();
@@ -74,9 +72,8 @@ function RouteComponent() {
   const debouncedSearch = useDebounce(searchTerm, 500);
 
   const navigate = useNavigate();
-  const { page, limit } = Route.useSearch();
+  const { page } = Route.useSearch();
 
-  // const [open, setOpen] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
 
   const { id } = Route.useParams();
@@ -85,7 +82,6 @@ function RouteComponent() {
   const { data: registrants } = useGetRegistrantByTicketID({
     ticketID: id,
     page,
-    limit,
     search: debouncedSearch,
   });
 
@@ -104,7 +100,6 @@ function RouteComponent() {
       params: { id },
       search: {
         page: newPage,
-        limit,
       },
     });
   };
@@ -167,6 +162,9 @@ function RouteComponent() {
                   className="w-fit h-fit p-4 bg-muted border aspect-square"
                 />
               </div>
+              <p>{`${
+                import.meta.env.VITE_APP_URL
+              }/ticket/${id}?state=${state}`}</p>
             </Modal>
           )}
         </div>

@@ -49,7 +49,12 @@ function RouteComponent() {
               </div>
             }
           >
-            <QRCodeSVG value={ticket.url} className="w-full" />
+            <div className="flex justify-center items-center">
+              <QRCodeSVG
+                value={ticket.url}
+                className="w-fit h-fit p-4 bg-muted border aspect-square"
+              />
+            </div>
           </Modal>
         ))}
       </div>

@@ -5,6 +5,7 @@ import { ticketService } from "@/service/ticket";
 import type { Ticket } from "@/types/ticket";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ImageOff } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/_public/ticket/$id/")({
   loader: async ({ params: { id } }) => {
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_public/ticket/$id/")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
       state: search.state as string,
+      action: search.action as string,
     };
   },
   component: RouteComponent,
@@ -28,11 +30,17 @@ export const Route = createFileRoute("/_public/ticket/$id/")({
 
 function RouteComponent() {
   const { id } = Route.useParams();
-  const { state } = Route.useSearch();
+  const { state, action } = Route.useSearch();
   const ticket = Route.useLoaderData() as Ticket;
   const { data: user } = usePublicUserByTicketId(id);
 
   const { mutate } = useCreateRegistrant(state);
+
+  useEffect(() => {
+    if (action == "claim") {
+      mutate(ticket.id);
+    }
+  }, [action, mutate, ticket]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">

@@ -7,10 +7,6 @@ services:
     restart: unless-stopped
     env_file:
       - ./web/.env
-    volumes:
-      - ./web:/app
-      - /app/node_modules
-      - /root/.local/share/pnpm
     networks:
       - nginx
 
@@ -34,8 +30,6 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
-    ports:
-      - "6379"
     volumes:
       - redis:/data
     networks:
@@ -49,8 +43,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
       POSTGRES_DB: fysite
-    ports:
-      - "5432"
     volumes:
       - db:/var/lib/postgresql/data
     networks:
@@ -63,5 +55,9 @@ volumes:
 
 networks:
   nginx:
+    name: nginx
+    external: true
   redis:
+    name: redis
   db:
+    name: db

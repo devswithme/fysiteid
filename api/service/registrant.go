@@ -104,9 +104,10 @@ func (s *registrantService) Create(ctx context.Context, ticketID string, state s
 			return fmt.Errorf("state is required for private mode tickets")
 		}
 
-		cache, err := s.redis.Get(ticketID + strconv.Itoa(int(userID)))
+		cache, err := s.redis.Get(ticketID + state)
+
 		if err != nil {
-			s.logger.Error("failed to get state from cache", zap.Error(err))
+			s.logger.Error("failed to get state from cache", zap.Error(err), zap.String("key", ticketID+strconv.Itoa(int(userID))+state))
 			return fmt.Errorf("failed to verify state: %w", err)
 		}
 
@@ -162,7 +163,7 @@ func (s *registrantService) Create(ctx context.Context, ticketID string, state s
 	}
 
 	if *ticket.Mode {
-		if err := s.redis.Delete(ticketID + strconv.Itoa(int(userID))); err != nil {
+		if err := s.redis.Delete(ticketID + state); err != nil {
 			s.logger.Warn("failed to cleanup state", zap.Error(err))
 		}
 	}
@@ -187,10 +188,11 @@ func (s *registrantService) Generate(ctx context.Context, ticketID string, userI
 
 	if mode {
 		state := helper.GenerateState(6)
-		if err := s.redis.Set(ticketID+strconv.Itoa(int(userID)), state, time.Minute); err != nil {
+		if err := s.redis.Set(ticketID+state, state, time.Minute); err != nil {
 			s.logger.Error("failed generating registrant", zap.Error(err))
 			return "", err
 		}
+		s.logger.Info("created registrant redis", zap.String("state", state))
 		return state, nil
 	}
 

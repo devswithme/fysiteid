@@ -2,6 +2,7 @@ import { logEvent } from "@/lib/utils";
 import { authService } from "@/service/auth";
 import { registrantService } from "@/service/registrant";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 export const registrantKeys = {
@@ -13,14 +14,16 @@ export const registrantKeys = {
 
 export function useCreateRegistrant(state: string) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: (ticketID: string) =>
       registrantService.createRegistrant(ticketID, state),
     onError: (err, ticketID) => {
       if (err.message == "") {
-        authService.login(`/ticket/${ticketID}`);
+        authService.login(`/ticket/${ticketID}?state=${state}&action=claim`);
       } else {
-        toast.error(err.message);
+        toast.error("Fail to claim ticket");
       }
     },
     onSuccess: (_, ticketID) => {
@@ -31,7 +34,8 @@ export function useCreateRegistrant(state: string) {
         queryKey: registrantKeys.detail(ticketID),
       });
       queryClient.invalidateQueries({ queryKey: registrantKeys.list() });
-      window.location.href = "/dash/history";
+      toast.success("Successfully claim ticket");
+      navigate({ to: "/dash/history" });
     },
   });
 }
@@ -44,6 +48,7 @@ export function useGenerateState(ticketID: string) {
     queryKey: registrantKeys.gen(ticketID),
     queryFn: () => registrantService.generateState(ticketID),
     enabled: !!ticketID,
+    refetchOnWindowFocus: false,
   });
 }
 

@@ -17,14 +17,19 @@ import {
 } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 import { useDeleteTicket, useUpdateTicket } from "@/hooks/use-ticket";
-import { useLoaderData, useParams } from "@tanstack/react-router";
 import type { ticketMutationType } from "@/validation/ticket";
 import Modal from "../modal";
 import TicketForm from "../form/ticket";
+import { useMatch } from "@tanstack/react-router";
 
 export function NavActions() {
-  const { id } = useParams({ from: "/_auth/dash/ticket/$id/" });
-  const ticket = useLoaderData({ from: "/_auth/dash/ticket/$id/" });
+  const match = useMatch({
+    from: "/_auth/dash/ticket/$id/",
+    shouldThrow: false,
+  });
+
+  const id = match?.params?.id as string;
+  const ticket = match ? match.loaderData : null;
 
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
