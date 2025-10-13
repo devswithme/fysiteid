@@ -162,9 +162,6 @@ function RouteComponent() {
                   className="w-fit h-fit p-4 bg-muted border aspect-square"
                 />
               </div>
-              <p>{`${
-                import.meta.env.VITE_APP_URL
-              }/ticket/${id}?state=${state}`}</p>
             </Modal>
           )}
         </div>
