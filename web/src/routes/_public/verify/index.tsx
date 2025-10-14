@@ -21,7 +21,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center space-y-4 text-center">
-        {err == "0" ? (
+        {err == "1" ? (
           <>
             <X className="w-16 h-16 text-destructive" />
             <h1 className="text-2xl font-semibold">Failed to verify ticket</h1>

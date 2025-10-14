@@ -20,6 +20,7 @@ function RouteComponent() {
         {!tickets && !isLoading && <DataEmpty className="col-span-2" />}
         {tickets?.map((ticket) => (
           <Modal
+            key={ticket.id}
             trigger={
               <div className="border rounded-md overflow-hidden">
                 <div className="bg-muted aspect-video flex justify-center items-center">
@@ -54,6 +55,7 @@ function RouteComponent() {
                 value={ticket.url}
                 className="w-fit h-fit p-4 bg-muted border aspect-square"
               />
+              <p>{ticket.url}</p>
             </div>
           </Modal>
         ))}

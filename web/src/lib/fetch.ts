@@ -47,7 +47,7 @@ fetch.interceptors.response.use(
 
       try {
         await axios.post(
-          `${import.meta.env.API_API_URL}/auth/refresh`,
+          `${import.meta.env.VITE_API_URL}/auth/refresh`,
           {},
           { withCredentials: true }
         );

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"fybe/model/domain"
 	"fybe/model/dto"
 
@@ -89,8 +90,14 @@ func (r *registrantRepository) Create(ctx context.Context, registrant *domain.Re
 }
 
 func (r *registrantRepository) Update(ctx context.Context, id string, ticketID string, userID uint) error {
-	if err := r.db.WithContext(ctx).Table("registrants").Where("id = ? AND ticket_id = ? AND ticket_owner_id = ?", id, ticketID, userID).Update("is_verified", true).Error; err != nil {
-		r.logger.Error("failed to update registrant", zap.String("id", id), zap.Uint("userID", userID), zap.Error(err))
+	result := r.db.WithContext(ctx).Table("registrants").Where("id = ? AND ticket_id = ? AND ticket_owner_id = ?", id, ticketID, userID).Update("is_verified", true)
+
+	if result.Error != nil {
+		r.logger.Error("failed to update registrant", zap.String("id", id), zap.Uint("userID", userID), zap.Error(result.Error))
+		return result.Error
+	} else if result.RowsAffected == 0 {
+		err := fmt.Errorf("no rows effected")
+		r.logger.Error("invalid data", zap.String("id", id), zap.Uint("userID", userID), zap.Error(err))
 		return err
 	}
 

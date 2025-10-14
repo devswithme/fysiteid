@@ -20,7 +20,7 @@ export function useCreateRegistrant(state: string) {
     mutationFn: (ticketID: string) =>
       registrantService.createRegistrant(ticketID, state),
     onError: (err, ticketID) => {
-      if (err.message == "") {
+      if (err.message === "Unauthorized") {
         authService.login(`/ticket/${ticketID}?state=${state}&action=claim`);
       } else {
         toast.error("Fail to claim ticket");
