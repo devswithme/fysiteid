@@ -55,7 +55,6 @@ function RouteComponent() {
                 value={ticket.url}
                 className="w-fit h-fit p-4 bg-muted border aspect-square"
               />
-              <p>{ticket.url}</p>
             </div>
           </Modal>
         ))}
