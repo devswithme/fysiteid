@@ -141,31 +141,33 @@ function RouteComponent() {
         </div>
         <div className="flex gap-2 flex-wrap">
           {ticket?.mode && (
-            <Modal
-              trigger={
-                <Button
-                  onClick={async () => {
-                    await regenerate();
-                    setQrOpen(true);
-                  }}
-                >
-                  <QrCode /> Generate
-                </Button>
-              }
-              open={qrOpen}
-              onOpenChange={setQrOpen}
-            >
-              <div className="flex justify-center items-center">
-                <QRCodeSVG
-                  value={`${
-                    import.meta.env.VITE_APP_URL
-                  }/ticket/${id}?state=${state}`}
-                  className="w-fit h-fit p-4 bg-muted border aspect-square"
-                />
-              </div>
-            </Modal>
+            <>
+              <Modal
+                trigger={
+                  <Button
+                    onClick={async () => {
+                      await regenerate();
+                      setQrOpen(true);
+                    }}
+                  >
+                    <QrCode /> Generate
+                  </Button>
+                }
+                open={qrOpen}
+                onOpenChange={setQrOpen}
+              >
+                <div className="flex justify-center items-center">
+                  <QRCodeSVG
+                    value={`${
+                      import.meta.env.VITE_APP_URL
+                    }/ticket/${id}?state=${state}`}
+                    className="w-fit h-fit p-4 bg-muted border aspect-square"
+                  />
+                </div>
+              </Modal>
+              <QrScanner />
+            </>
           )}
-          <QrScanner />
         </div>
       </div>
       <div className="space-y-4">
