@@ -1,5 +1,6 @@
 // import TicketForm from "@/components/form/ticket";
 import Modal from "@/components/modal";
+import QrScanner from "@/components/scan";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -148,7 +149,7 @@ function RouteComponent() {
                     setQrOpen(true);
                   }}
                 >
-                  <QrCode /> Generate QR
+                  <QrCode /> Generate
                 </Button>
               }
               open={qrOpen}
@@ -164,6 +165,7 @@ function RouteComponent() {
               </div>
             </Modal>
           )}
+          <QrScanner />
         </div>
       </div>
       <div className="space-y-4">

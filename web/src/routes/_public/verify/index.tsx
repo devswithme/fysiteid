@@ -25,9 +25,6 @@ function RouteComponent() {
           <>
             <X className="w-16 h-16 text-destructive" />
             <h1 className="text-2xl font-semibold">Failed to verify ticket</h1>
-            <Link to="/" className={buttonVariants()}>
-              Home
-            </Link>
           </>
         ) : (
           <>
@@ -35,21 +32,21 @@ function RouteComponent() {
             <h1 className="text-2xl font-semibold">
               Successfully verified ticket
             </h1>
-            {/* @ts-expect-error search is required */}
-            <Link
-              to="/dash/ticket/$id"
-              params={{ id: ticket }}
-              onClick={() => {
-                queryClient.invalidateQueries({
-                  queryKey: ticketKeys.publicDetail(ticket),
-                });
-              }}
-              className={buttonVariants()}
-            >
-              Go back
-            </Link>
           </>
         )}
+        {/* @ts-expect-error property search is missing */}
+        <Link
+          to="/dash/ticket/$id"
+          params={{ id: ticket }}
+          onClick={() => {
+            queryClient.invalidateQueries({
+              queryKey: ticketKeys.publicDetail(ticket),
+            });
+          }}
+          className={buttonVariants()}
+        >
+          Go back
+        </Link>
       </div>
     </div>
   );
