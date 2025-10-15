@@ -90,7 +90,7 @@ func (r *registrantRepository) Create(ctx context.Context, registrant *domain.Re
 }
 
 func (r *registrantRepository) Update(ctx context.Context, id string, ticketID string, userID uint) error {
-	result := r.db.WithContext(ctx).Table("registrants").Where("id = ? AND ticket_id = ? AND ticket_owner_id = ?", id, ticketID, userID).Update("is_verified", true)
+	result := r.db.WithContext(ctx).Table("registrants").Where("id = ? AND ticket_id = ? AND ticket_owner_id = ? AND is_verified = false", id, ticketID, userID).Update("is_verified", true)
 
 	if result.Error != nil {
 		r.logger.Error("failed to update registrant", zap.String("id", id), zap.Uint("userID", userID), zap.Error(result.Error))
